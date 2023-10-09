@@ -5,8 +5,8 @@ use supermarketdb;
 create table product(
 product_id int primary key auto_increment,
 product_name varchar(30),
-cost double,
-company varchar(30),
+product_cost double,
+product_company varchar(30),
 product_type varchar(20),
 product_description varchar(100)
 );
@@ -20,3 +20,5 @@ customer_email varchar(50),
 total double,
 sales_date date
 );
+
+

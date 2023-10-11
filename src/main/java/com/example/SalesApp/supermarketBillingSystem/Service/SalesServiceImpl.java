@@ -1,5 +1,6 @@
 package com.example.SalesApp.supermarketBillingSystem.Service;
 
+import com.example.SalesApp.supermarketBillingSystem.Entity.Product;
 import com.example.SalesApp.supermarketBillingSystem.Entity.Sales;
 import com.example.SalesApp.supermarketBillingSystem.Repository.SalesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,29 @@ public class SalesServiceImpl implements SalesService{
     }
 
     @Override
+    public Sales getSalesById(Long salesId) {
+        return salesRepo.getReferenceById(salesId);
+    }
+
+    @Override
     public List<Sales> getAllSales() {
         return salesRepo.findAll();
     }
+
+    @Override
+    public Sales generateBill(String customerId, String customerName, String customerMobile,
+                             String customerEmail, List<Product> productList) {
+        Double total = 0.0;//productList.mapToDouble(Product::getProductCost).sum();
+        Sales sales = new Sales();
+        sales.setTotal(total);
+       // sales.setProductList(productList);
+        sales.setCustomerName(customerName);
+        sales.setCustomerEmail(customerEmail);
+        sales.setCustomerMobile(customerMobile);
+        return sales;
+    }
+
+
+
+
 }

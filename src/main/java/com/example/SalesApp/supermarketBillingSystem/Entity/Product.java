@@ -9,9 +9,10 @@ import jakarta.persistence.Id;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
     private String productName;
+    private Integer productUnit;
     private Double productCost;
     private String productCompany;
     private String productType;
@@ -20,9 +21,10 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long productId, String productName, Double productCost, String productCompany, String productType, String productDescription) {
+    public Product(Long productId, String productName, Integer productUnit, Double productCost, String productCompany, String productType, String productDescription) {
         this.productId = productId;
         this.productName = productName;
+        this.productUnit = productUnit;
         this.productCost = productCost;
         this.productCompany = productCompany;
         this.productType = productType;
@@ -77,11 +79,20 @@ public class Product {
         this.productDescription = productDescription;
     }
 
+    public Integer getProductUnit() {
+        return productUnit;
+    }
+
+    public void setProductUnit(Integer productUnit) {
+        this.productUnit = productUnit;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
                 "productId=" + productId +
                 ", productName='" + productName + '\'' +
+                ", productUnit=" + productUnit +
                 ", productCost=" + productCost +
                 ", productCompany='" + productCompany + '\'' +
                 ", productType='" + productType + '\'' +

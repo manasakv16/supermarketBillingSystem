@@ -1,35 +1,37 @@
 package com.example.SalesApp.supermarketBillingSystem.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Sales {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long salesId;
-    private String customerId;
     private String customerName;
     private String customerMobile;
     private String customerEmail;
+    private String productId;
+    private Integer unitCount;
     private Double total;
     private Date salesDate;
 
     public Sales() {
     }
 
-    public Sales(Long salesId, String customerId, String customerName, String customerMobile, String customerEmail, Double total, Date salesDate) {
+    public Sales(Long salesId, String customerName, String customerMobile, String customerEmail, String productId, Integer unitCount, Double total, Date salesDate) {
         this.salesId = salesId;
-        this.customerId = customerId;
         this.customerName = customerName;
         this.customerMobile = customerMobile;
         this.customerEmail = customerEmail;
+        this.productId = productId;
+        this.unitCount = unitCount;
         this.total = total;
-        this.salesDate = salesDate;
+        this.salesDate = Date.from(Instant.now());
     }
 
     public Long getSalesId() {
@@ -38,14 +40,6 @@ public class Sales {
 
     public void setSalesId(Long salesId) {
         this.salesId = salesId;
-    }
-
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
     }
 
     public String getCustomerName() {
@@ -88,14 +82,31 @@ public class Sales {
         this.salesDate = salesDate;
     }
 
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public Integer getUnitCount() {
+        return unitCount;
+    }
+
+    public void setUnitCount(Integer unitCount) {
+        this.unitCount = unitCount;
+    }
+
     @Override
     public String toString() {
         return "Sales{" +
                 "salesId=" + salesId +
-                ", customerId='" + customerId + '\'' +
                 ", customerName='" + customerName + '\'' +
                 ", customerMobile='" + customerMobile + '\'' +
                 ", customerEmail='" + customerEmail + '\'' +
+                ", productId=" + productId +
+                ", unitCount=" + unitCount +
                 ", total=" + total +
                 ", salesDate=" + salesDate +
                 '}';

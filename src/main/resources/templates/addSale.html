@@ -1,5 +1,37 @@
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <title>Add Sale</title>
+<head>
+    <style>
+    body {
+	background-color: lightblue;
+	}
+	    table, th, td {
+    border: 1px solid white;
+    border-collapse: collapse;
+    }
+    th, td {
+            text-align: left;
+            padding: 4px;
+        }
+
+        tr:nth-child(even) {
+            background-color: skyblue;
+        }
+  </style>
+    <h2> create Sale</h2>
+
+</head>
+<body>
+<form action="saveSale", method="post">
+    <pre>
+        Enter Sales information below :
+      <pre></pre>
+        Customer Name: <input type="text" name="customerName" >    Customer Mobile: <input type="text" name="customerMobile" >   Customer Email: <input type="text" name="customerEmail" > </br>
+
+        <input type="submit", value="Start Billing">
+</form>
+
+<a href="homePage">Back</a></br>
 <pre>**Shopping is the greatest gift of all** </pre>
 <br>
 </body>

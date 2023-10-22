@@ -1,11 +1,8 @@
 package com.example.SalesApp.supermarketBillingSystem.Entity;
 
 import jakarta.persistence.*;
-
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
+
 
 @Entity
 public class Sales {
@@ -16,14 +13,18 @@ public class Sales {
     private String customerMobile;
     private String customerEmail;
     private String productId;
-    private Integer unitCount;
+    private String unitCount;
     private Double total;
-    private Date salesDate;
+    private LocalDate salesDate;
 
     public Sales() {
+        this.salesDate = LocalDate.now();
     }
 
-    public Sales(Long salesId, String customerName, String customerMobile, String customerEmail, String productId, Integer unitCount, Double total, Date salesDate) {
+
+    public Sales(Long salesId, String customerName, String customerMobile,
+                 String customerEmail, String productId, String unitCount,
+                 Double total) {
         this.salesId = salesId;
         this.customerName = customerName;
         this.customerMobile = customerMobile;
@@ -31,7 +32,7 @@ public class Sales {
         this.productId = productId;
         this.unitCount = unitCount;
         this.total = total;
-        this.salesDate = Date.from(Instant.now());
+        this.salesDate = LocalDate.now();
     }
 
     public Long getSalesId() {
@@ -74,11 +75,11 @@ public class Sales {
         this.total = total;
     }
 
-    public Date getSalesDate() {
+    public LocalDate getSalesDate() {
         return salesDate;
     }
 
-    public void setSalesDate(Date salesDate) {
+    public void setSalesDate(LocalDate salesDate) {
         this.salesDate = salesDate;
     }
 
@@ -90,11 +91,11 @@ public class Sales {
         this.productId = productId;
     }
 
-    public Integer getUnitCount() {
+    public String getUnitCount() {
         return unitCount;
     }
 
-    public void setUnitCount(Integer unitCount) {
+    public void setUnitCount(String unitCount) {
         this.unitCount = unitCount;
     }
 

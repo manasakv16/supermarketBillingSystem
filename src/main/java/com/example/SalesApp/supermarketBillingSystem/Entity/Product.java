@@ -14,6 +14,7 @@ public class Product {
     private String productName;
     private Integer productUnit;
     private Double productCost;
+    private Double totalProductCost;
     private String productCompany;
     private String productType;
     private String productDescription;
@@ -21,11 +22,13 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long productId, String productName, Integer productUnit, Double productCost, String productCompany, String productType, String productDescription) {
+    public Product(Long productId, String productName, Integer productUnit, Double productCost,
+                   String productCompany, String productType, String productDescription) {
         this.productId = productId;
         this.productName = productName;
         this.productUnit = productUnit;
         this.productCost = productCost;
+        this.totalProductCost = productCost * productUnit;
         this.productCompany = productCompany;
         this.productType = productType;
         this.productDescription = productDescription;
@@ -87,6 +90,14 @@ public class Product {
         this.productUnit = productUnit;
     }
 
+    public Double getTotalProductCost() {
+        return totalProductCost;
+    }
+
+    public void setTotalProductCost(Double totalProductCost) {
+        this.totalProductCost = totalProductCost;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -94,6 +105,7 @@ public class Product {
                 ", productName='" + productName + '\'' +
                 ", productUnit=" + productUnit +
                 ", productCost=" + productCost +
+                ", totalProductCost=" + totalProductCost +
                 ", productCompany='" + productCompany + '\'' +
                 ", productType='" + productType + '\'' +
                 ", productDescription='" + productDescription + '\'' +

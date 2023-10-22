@@ -3,7 +3,7 @@
 <head>
     <style>
     body {
-	background-color: lightblue;
+	background-color: #50ffff;
 	}
 	    table, th, td {
     border: 1px solid white;
@@ -15,7 +15,7 @@
         }
 
         tr:nth-child(even) {
-            background-color: skyblue;
+            background-color: #05dfdf;
         }
   </style>
     <h2> create Sale</h2>
@@ -25,14 +25,14 @@
 <form action="saveSale", method="post">
     <pre>
         Order information is below :
-      <pre></pre>
-        Sale ID: <input type="text" name="salesId"  th:value="${sales.salesId}" ReadOnly >
+      </br>
+        Sale ID: <input type="text" name="salesId"  th:value="${sales.salesId}" ReadOnly > </input>
 
 <h4>Sales Dashboard</h4>
         Product : <select name="productId">
         <option value="1">Good-day </option>
-        <option value="3"> Parle-G </option>
         <option value="2"> Treat </option>
+        <option value="3"> Parle-G </option>
         <option value="5"> Maggi </option>
         <option value="4"> Marie Gold </option>
     </select>        Unit : <select name="productUnit">
@@ -46,31 +46,37 @@
        <option value="8">8</option>
        <option value="9">9</option>
        <option value="10">10</option> </select>     <input type="submit", value="Add to Cart">
-
-        Total Amount:
-
-        <input type="submit", value="Pay and generate Bill"></pre>
+    </pre>
 </form>
+</br>
 <b th:text="${msg}"></b>
-
 <h4>Your Cart</h4> <Table>
     <tr>
         <th>Product ID</th>
         <th>Product Name</th>
         <th>Product Unit</th>
         <th>Product Cost</th>
+        <th>Total Product Cost</th>
     </tr>
     <tr th:each ="product:${product}" >
         <td th:text="${product.productId}"></td>
         <td th:text="${product.productName}"></td>
         <td th:text="${product.productUnit}"></td>
         <td th:text="${product.productCost}"></td>
+        <td th:text="${product.totalProductCost}"></td>
 
-
+        <td><a th:href="@{'editSales?pid=' + ${product.productId} + '&id=' + ${sales.salesId}}">update</a>
+        <td><a th:href="@{'deleteProductInSale?pid=' + ${product.productId} + '&id=' + ${sales.salesId}}">delete</a>
     </tr>
-</Table>
+</Table> </br>
+ Total Amount: <input type="text" name="total"  th:value="${sales.total}" ReadOnly > </input>
+</pre>
 </br>
+<a th:href="@{'payAndGenerateBill?id='+${sales.salesId}}">Pay and Generate Bill</a>
+</br></br>
 
+<a th:href="@{'deleteSales?id='+${sales.salesId}}">Delete Sale</a></br>
+<a href="addSale">Add Sale</a></br>
 <a href="salesReport">Show all sales</a></br>
 <a href="homePage">Back</a></br>
 <pre>**Shopping is the greatest gift of all** </pre>

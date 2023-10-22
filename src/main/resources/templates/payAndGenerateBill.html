@@ -1,0 +1,54 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<title>Sales Report</title>
+<head>
+    <style>
+    body {
+	background-color: lightblue;
+	}
+	    table, th, td {
+    border: 1px solid white;
+    border-collapse: collapse;
+    }
+    th, td {
+            text-align: left;
+            padding: 4px;
+        }
+
+        tr:nth-child(even) {
+            background-color: skyblue;
+        }
+  </style>
+    <h2> Bill</h2>
+</head>
+<body>
+
+Date: <input type="text" name="salesDate"  th:value="${sales.salesDate}" ReadOnly >
+</input>
+ </br> Sale ID : <input type="text" th:value="${sales.salesId}" ReadOnly > </input>
+ </br> Customer Name : <input type="text" th:value="${sales.customerName}" ReadOnly> </input>
+ </br> Customer Mobile : <input type="text" th:value="${sales.customerMobile}" ReadOnly> </input>
+ </br> Customer Email : <input type="text" th:value="${sales.customerEmail}" ReadOnly> </input>
+
+<h4>Items List</h4> <Table>
+    <tr>
+        <th>Product ID</th>
+        <th>Product Name</th>
+        <th>Product Unit</th>
+        <th>Product Cost</th>
+    </tr>
+    <tr th:each ="product:${product}" >
+        <td th:text="${product.productId}"></td>
+        <td th:text="${product.productName}"></td>
+        <td th:text="${product.productUnit}"></td>
+        <td th:text="${product.productCost}"></td>
+    </tr>
+</Table>
+
+</br> Total Amount: <input type="text" name="total"  th:value="${sales.total}" ReadOnly > </input>
+</br> </br>
+
+<a href="addSale">Add Sales</a></br>
+<pre>**Shopping is the greatest gift of all** </pre>
+<br>
+</body>
+</html>

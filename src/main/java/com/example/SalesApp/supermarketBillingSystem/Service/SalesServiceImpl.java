@@ -2,17 +2,22 @@ package com.example.SalesApp.supermarketBillingSystem.Service;
 
 import com.example.SalesApp.supermarketBillingSystem.Entity.Product;
 import com.example.SalesApp.supermarketBillingSystem.Entity.Sales;
+import com.example.SalesApp.supermarketBillingSystem.Repository.ProductRepo;
 import com.example.SalesApp.supermarketBillingSystem.Repository.SalesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SalesServiceImpl implements SalesService{
 
     @Autowired
     private SalesRepo salesRepo;
+
+    @Autowired
+    ProductRepo productRepo;
 
     @Override
     public Sales addSales(Sales sales) {
@@ -55,6 +60,24 @@ public class SalesServiceImpl implements SalesService{
         sales.setCustomerEmail(customerEmail);
         sales.setCustomerMobile(customerMobile);
         return sales;
+    }
+
+    public void getProductList(Long salesId, List<Product> productList){
+        Sales sale = salesRepo.getReferenceById(salesId);
+        final String[] ids = sale.getProductId().split(",");
+        String[] productUnit = sale.getUnitCount().split(",");
+        int i = 0;
+
+        for (String id : ids) {
+            if(!id.isEmpty()) {
+                Optional<Product> productById = Optional.of(productRepo.getReferenceById(Long.valueOf(id)));
+                productById.get().setProductUnit(Integer.valueOf(productUnit[i++]));
+                productById.get().setTotalProductCost(productById.get().getProductCost() *
+                        productById.get().getProductUnit());
+                productList.add(productById.orElseGet(Product::new));
+            }
+        }
+
     }
 
 

@@ -18,24 +18,13 @@
             background-color: skyblue;
         }
   </style>
-    <h2> create Product</h2>
+    <h3> Choose Product to edit</h3>
 </head>
 <body>
-<form action="saveProduct", method="post">
-    <pre>
-        Enter Product information below :
-      <pre></pre>
-        Name:           <input type="text" name="productName" > </br>
-        Unit :          <input type="text" name="productUnit" > </br>
-        Cost :          <input type="text" name="productCost" > </br>
-        Type:           <input type="text" name="productType" > </br>
-        Company:        <input type="text" name="productCompany" > </br>
-        Description:    <input type="text" name="productDescription" > </br>
 
-        <input type="submit", value="save"> </pre>
-</form>
-<b th:text="${msg}"></b>
+<b th:text="${msg}"></b></br>
 
+</br>
 <h3> Products Table</h3>
 <table style="width:50%">
     <tr>
@@ -60,10 +49,9 @@
         <td th:text="${product.productCompany}"></td>
         <td th:text="${product.productDescription}"></td>
 
-        <td><a th:href="@{'editProduct?id='+${product.productId}}">update</a>
-        <td><a th:href="@{'deleteProduct?id='+${product.productId}}">delete</a>
+        <td><a th:href="@{'editSaleProduct?pid='+${product.productId}}">update</a>
+        <td><a th:href="@{'deleteSaleProduct?pid='+${product.productId}}">delete</a>
     </tr>
-
 
 </table>
 </br>

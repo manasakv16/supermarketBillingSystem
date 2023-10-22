@@ -1,0 +1,45 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<title>Add product</title>
+<head>
+    <style>
+    body {
+	background-color: lightblue;
+	}
+	    table, th, td {
+    border: 1px solid white;
+    border-collapse: collapse;
+    }
+    th, td {
+            text-align: left;
+            padding: 4px;
+        }
+
+        tr:nth-child(even) {
+            background-color: skyblue;
+        }
+  </style>
+    <h2> Edit Product</h2>
+</head>
+<body>
+<form action="updateProduct", method="post">
+    <pre>
+        Edit Product information below :
+      <pre></pre>
+
+        ID:             <input type="text" name="productId" th:value="${product.productId}" readonly>
+        Name :          <input type="text" name="productName" th:value="${product.productName}">
+        Cost :          <input type="text" name="productCost" th:value="${product.productCost}">
+        Unit :          <input type="text" name="productUnit" th:value="${product.productUnit}">
+        Type :          <input type="text" name="productType" th:value="${product.productType}">
+        Company:        <input type="text" name="productCompany" th:value="${product.productCompany}">
+        Description:    <input type="text" name="productDescription" th:value="${product.productDescription}" >
+
+        <input type="submit", value="save"> </pre>
+</form></br>
+<b th:text="${msg}"></b></br>
+<a href="addProduct">Back</a></br>
+<a href="homePage">HomePage</a></br>
+<pre>**Shopping is the greatest gift of all** </pre>
+<br>
+</body>
+</html>

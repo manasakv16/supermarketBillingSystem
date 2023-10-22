@@ -3,7 +3,7 @@
 <head>
     <style>
     body {
-	background-color: lightblue;
+	background-color: #61caca;
 	}
 	    table, th, td {
     border: 1px solid white;
@@ -15,7 +15,7 @@
         }
 
         tr:nth-child(even) {
-            background-color: skyblue;
+            background-color: #61acac;
         }
   </style>
     <h2> Sales Report</h2>
@@ -25,19 +25,21 @@
 <Table>
     <tr>
         <th>Sale ID</th>
-        <th>Customer ID</th>
         <th>Customer Name</th>
         <th>Customer Mobile</th>
         <th>Customer Email</th>
+        <th>Product ID</th>
+        <th>Unit count</th>
         <th>Total </th>
         <th>Date </th>
     </tr>
     <tr th:each ="sales:${sales}" >
         <td th:text="${sales.salesId}"></td>
-        <td th:text="${sales.customerId}"></td>
         <td th:text="${sales.customerName}"></td>
         <td th:text="${sales.customerMobile}"></td>
         <td th:text="${sales.customerEmail}"></td>
+        <td th:text="${sales.productId}"></td>
+        <td th:text="${sales.unitCount}"></td>
         <td th:text="${sales.total}"></td>
         <td th:text="${sales.salesDate}"></td>
 

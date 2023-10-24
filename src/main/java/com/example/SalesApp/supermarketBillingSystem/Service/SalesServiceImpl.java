@@ -2,6 +2,7 @@ package com.example.SalesApp.supermarketBillingSystem.Service;
 
 import com.example.SalesApp.supermarketBillingSystem.Entity.Product;
 import com.example.SalesApp.supermarketBillingSystem.Entity.Sales;
+import com.example.SalesApp.supermarketBillingSystem.Repository.CustomerRepo;
 import com.example.SalesApp.supermarketBillingSystem.Repository.ProductRepo;
 import com.example.SalesApp.supermarketBillingSystem.Repository.SalesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,10 @@ public class SalesServiceImpl implements SalesService{
     private SalesRepo salesRepo;
 
     @Autowired
-    ProductRepo productRepo;
+    private ProductRepo productRepo;
+
+    @Autowired
+    private CustomerRepo customerRepo;
 
     @Override
     public Sales addSales(Sales sales) {
@@ -48,39 +52,4 @@ public class SalesServiceImpl implements SalesService{
     public List<Sales> getAllSales() {
         return salesRepo.findAll();
     }
-
-    @Override
-    public Sales generateBill(String customerId, String customerName, String customerMobile,
-                             String customerEmail, List<Product> productList) {
-        Double total = 0.0;//productList.mapToDouble(Product::getProductCost).sum();
-        Sales sales = new Sales();
-        sales.setTotal(total);
-       // sales.setProductList(productList);
-        sales.setCustomerName(customerName);
-        sales.setCustomerEmail(customerEmail);
-        sales.setCustomerMobile(customerMobile);
-        return sales;
-    }
-
-    public void getProductList(Long salesId, List<Product> productList){
-        Sales sale = salesRepo.getReferenceById(salesId);
-        final String[] ids = sale.getProductId().split(",");
-        String[] productUnit = sale.getUnitCount().split(",");
-        int i = 0;
-
-        for (String id : ids) {
-            if(!id.isEmpty()) {
-                Optional<Product> productById = Optional.of(productRepo.getReferenceById(Long.valueOf(id)));
-                productById.get().setProductUnit(Integer.valueOf(productUnit[i++]));
-                productById.get().setTotalProductCost(productById.get().getProductCost() *
-                        productById.get().getProductUnit());
-                productList.add(productById.orElseGet(Product::new));
-            }
-        }
-
-    }
-
-
-
-
 }

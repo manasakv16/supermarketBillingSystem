@@ -1,4 +1,4 @@
-<html xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 <title>Add Sale</title>
 <head>
     <style>
@@ -22,11 +22,13 @@
 
 </head>
 <body>
-<form action="saveSale", method="post">
+<a href="addCustomer">Register a new customer</a>
+</br></br>
+
+<form action="startSale", method="post">
     <pre>
-        Enter Sales information below :
-      <pre></pre>
-        Customer Name: <input type="text" name="customerName" >    Customer Mobile: <input type="text" name="customerMobile" >   Customer Email: <input type="text" name="customerEmail" > </br>
+        Customer Already registered.? Enter their mobile number.</br>
+        Customer Mobile: <input type="text" name="customerId" >   </br>
 
         <input type="submit", value="Start Billing">
     </pre>

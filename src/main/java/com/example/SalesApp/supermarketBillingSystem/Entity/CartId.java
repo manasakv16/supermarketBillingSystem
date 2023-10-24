@@ -1,25 +1,21 @@
 package com.example.SalesApp.supermarketBillingSystem.Entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
 
 import java.io.Serializable;
 
-@Entity
-@IdClass(CartId.class)
-public class Cart{
-    @Id
+
+@Embeddable
+public class CartId implements Serializable {
+
     private Long salesId;
-    @Id
     private Long productId;
-    private int productCount;
 
-    public Cart() {
-    }
-
-    public Cart(Long salesId, Long productId, int productCount) {
+    public CartId(){}
+    public CartId(Long salesId, Long productId) {
         this.salesId = salesId;
         this.productId = productId;
-        this.productCount = productCount;
     }
 
     public Long getSalesId() {
@@ -38,20 +34,22 @@ public class Cart{
         this.productId = productId;
     }
 
-    public int getProductCount() {
-        return productCount;
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
-    public void setProductCount(int productCount) {
-        this.productCount = productCount;
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 
     @Override
     public String toString() {
-        return "Cart{" +
+        return "CartId{" +
                 "salesId=" + salesId +
                 ", productId=" + productId +
-                ", productCount=" + productCount +
                 '}';
     }
 }
+

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CustomerServiceImpl implements CustomerService{
@@ -23,8 +24,8 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
-    public void deleteCustomer(Customer customer) {
-        customerRepo.delete(customer);
+    public void deleteCustomer(String customerMobile) {
+        customerRepo.deleteById(customerMobile);
     }
 
     @Override
@@ -33,7 +34,23 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
-    public List<Customer> getAllCustomer(Customer customer) {
+    public List<Customer> getAllCustomer() {
         return customerRepo.findAll();
+    }
+
+    @Override
+    public boolean isCustomerValid(String customerMobile) {
+        return customerMobile != null && customerMobile.length() == 10;
+    }
+
+    @Override
+    public boolean isCustomerValid(Customer customer) {
+        List<Customer> customerList = customerRepo.findAll();
+        for(Customer c : customerList) {
+            if(Objects.equals(c.getCustomerMobile(), customer.getCustomerMobile())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

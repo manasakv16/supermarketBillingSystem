@@ -13,4 +13,5 @@ public interface ProductService {
     Product getProductById(Product product);
     Optional<Product> getProductById(Long productId);
     List<Product> getAllProducts();
+    void getProductList( List<Long> productsId, List<Product> productList);
 }

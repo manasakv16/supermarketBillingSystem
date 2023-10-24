@@ -18,42 +18,20 @@
             background-color: skyblue;
         }
   </style>
-    <h3> Choose Product to edit</h3>
 </head>
 <body>
-
-<b th:text="${msg}"></b></br>
-
 </br>
-<h3> Products Table</h3>
-<table style="width:50%">
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Cost</th>
-        <th>Unit</th>
-        <th>Total product cost</th>
-        <th>Type</th>
-        <th>Company</th>
-        <th>Description</th>
-    </tr>
+<form action="updateSalesProduct", method="post">
+  Edit product list for Sales Id: <input type="text" name="salesId"  th:value="${cart.salesId}" ReadOnly > </input>
+<pre>
+  </br>ID:                      <input th:value="${product.productId}" name="productId" aria-readonly="true"></input>
+  </br>Name:                    <input th:value="${product.productName}" name="productName" aria-readonly="true"></input>
+  </br>Cost:                    <input th:value="${product.productCost}" name="productCost" aria-readonly="true"></input>
+  </br>Product Count:           <input th:value="${cart.productCount}" name="productCount"></input>
+</pre>
 
-    <tr th:each ="product:${product}" >
-        <td th:text="${product.productId}"></td>
-        <td th:text="${product.productName}"></td>
-        <td th:text="${product.productCost}"></td>
-
-        <td th:text="${product.productUnit}"></td>
-        <td th:text="${product.totalProductCost}"></td>
-        <td th:text="${product.productType}"></td>
-        <td th:text="${product.productCompany}"></td>
-        <td th:text="${product.productDescription}"></td>
-
-        <td><a th:href="@{'editSaleProduct?pid='+${product.productId}}">update</a>
-        <td><a th:href="@{'deleteSaleProduct?pid='+${product.productId}}">delete</a>
-    </tr>
-
-</table>
+  <input type="submit", value="update cart">
+</form>
 </br>
 <a href="homePage">Back</a></br>
 

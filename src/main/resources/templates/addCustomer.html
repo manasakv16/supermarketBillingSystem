@@ -1,0 +1,37 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<title>Add Customer</title>
+<head>
+    <style>
+    body {
+	background-color: #f0cccc;
+	}
+  </style>
+    <h2> create Customer</h2>
+
+</head>
+<body>
+
+<form action="addCustomer", method="post">
+    <pre>
+        Enter Customer information below :
+      <pre></pre>
+        Customer Name: <input type="text" name="customerName" >
+
+        Customer Mobile: <input type="text" name="customerMobile" >
+
+        Customer Email: <input type="text" name="customerEmail" placeholder="optional"> </br>
+
+        <input type="submit", value="Save">
+    </pre>
+</form>
+</br></br>
+
+<b th:text="${msg}"></b>
+
+</br>
+<a href="addSale">Add Sale</a></br>
+<a href="homePage">Back</a></br>
+<pre>**Shopping is the greatest gift of all** </pre>
+<br>
+</body>
+</html>

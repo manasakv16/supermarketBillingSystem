@@ -2,6 +2,7 @@ package com.example.SalesApp.supermarketBillingSystem.Entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Entity
@@ -9,11 +10,7 @@ public class Sales {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long salesId;
-    private String customerName;
-    private String customerMobile;
-    private String customerEmail;
-    private String productId;
-    private String unitCount;
+    private String customerId;
     private Double total;
     private LocalDate salesDate;
 
@@ -21,18 +18,11 @@ public class Sales {
         this.salesDate = LocalDate.now();
     }
 
-
-    public Sales(Long salesId, String customerName, String customerMobile,
-                 String customerEmail, String productId, String unitCount,
-                 Double total) {
+    public Sales(Long salesId, String customerId, LocalDate salesDate) {
         this.salesId = salesId;
-        this.customerName = customerName;
-        this.customerMobile = customerMobile;
-        this.customerEmail = customerEmail;
-        this.productId = productId;
-        this.unitCount = unitCount;
-        this.total = total;
-        this.salesDate = LocalDate.now();
+        this.customerId = customerId;
+        this.total = 0.0;
+        this.salesDate = salesDate;
     }
 
     public Long getSalesId() {
@@ -43,28 +33,12 @@ public class Sales {
         this.salesId = salesId;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public String getCustomerMobile() {
-        return customerMobile;
-    }
-
-    public void setCustomerMobile(String customerMobile) {
-        this.customerMobile = customerMobile;
-    }
-
-    public String getCustomerEmail() {
-        return customerEmail;
-    }
-
-    public void setCustomerEmail(String customerEmail) {
-        this.customerEmail = customerEmail;
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
     public Double getTotal() {
@@ -83,31 +57,11 @@ public class Sales {
         this.salesDate = salesDate;
     }
 
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
-    public String getUnitCount() {
-        return unitCount;
-    }
-
-    public void setUnitCount(String unitCount) {
-        this.unitCount = unitCount;
-    }
-
     @Override
     public String toString() {
         return "Sales{" +
                 "salesId=" + salesId +
-                ", customerName='" + customerName + '\'' +
-                ", customerMobile='" + customerMobile + '\'' +
-                ", customerEmail='" + customerEmail + '\'' +
-                ", productId=" + productId +
-                ", unitCount=" + unitCount +
+                ", customerId='" + customerId + '\'' +
                 ", total=" + total +
                 ", salesDate=" + salesDate +
                 '}';

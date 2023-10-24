@@ -34,6 +34,14 @@ public class Product {
         this.productDescription = productDescription;
     }
 
+    public Product(Long productId, String productName, int productCount, Double productCost, double totalProductCost) {
+        this.productId = productId;
+        this.productName = productName;
+        this.productUnit = productCount;
+        this.productCost = productCost;
+        this.totalProductCost = productCost * productUnit;
+    }
+
     public Long getProductId() {
         return productId;
     }

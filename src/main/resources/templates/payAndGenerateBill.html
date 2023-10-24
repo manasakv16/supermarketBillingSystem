@@ -25,9 +25,9 @@
 Date: <input type="text" name="salesDate"  th:value="${sales.salesDate}" ReadOnly >
 </input>
  </br> Sale ID : <input type="text" th:value="${sales.salesId}" ReadOnly > </input>
- </br> Customer Name : <input type="text" th:value="${sales.customerName}" ReadOnly> </input>
- </br> Customer Mobile : <input type="text" th:value="${sales.customerMobile}" ReadOnly> </input>
- </br> Customer Email : <input type="text" th:value="${sales.customerEmail}" ReadOnly> </input>
+ </br> Customer Name : <input type="text" th:value="${customer.customerName}" ReadOnly> </input>
+ </br> Customer Mobile : <input type="text" th:value="${customer.customerMobile}" ReadOnly> </input>
+ </br> Customer Email : <input type="text" th:value="${customer.customerEmail}" ReadOnly> </input>
 
 <h4>Items List</h4> <Table>
     <tr>
@@ -35,18 +35,20 @@ Date: <input type="text" name="salesDate"  th:value="${sales.salesDate}" ReadOnl
         <th>Product Name</th>
         <th>Product Unit</th>
         <th>Product Cost</th>
+        <th>Total product cost</th>
     </tr>
     <tr th:each ="product:${product}" >
         <td th:text="${product.productId}"></td>
         <td th:text="${product.productName}"></td>
         <td th:text="${product.productUnit}"></td>
         <td th:text="${product.productCost}"></td>
+        <td th:text="${product.totalProductCost}"></td>
     </tr>
 </Table>
 
 </br> Total Amount: <input type="text" name="total"  th:value="${sales.total}" ReadOnly > </input>
 </br> </br>
-
+<b th:text="${msg}"></b></br>
 <a href="addSale">Add Sales</a></br>
 <pre>**Shopping is the greatest gift of all** </pre>
 <br>

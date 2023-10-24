@@ -16,11 +16,13 @@ public class ProductServiceImpl implements  ProductService{
 
     @Override
     public Product addProduct(Product product) {
+        product.setTotalProductCost(product.getProductCost() * product.getProductUnit());
         return productRepo.save(product);
     }
 
     @Override
     public Product editProduct(Product product) {
+        product.setTotalProductCost(product.getProductCost() * product.getProductUnit());
         return productRepo.save(product);
     }
 
@@ -42,5 +44,12 @@ public class ProductServiceImpl implements  ProductService{
     @Override
     public List<Product> getAllProducts() {
         return productRepo.findAll();
+    }
+
+    @Override
+    public void getProductList(List<Long> productsId, List<Product> productList) {
+        for(Long id: productsId) {
+            productList.add(productRepo.getReferenceById(id));
+        }
     }
 }

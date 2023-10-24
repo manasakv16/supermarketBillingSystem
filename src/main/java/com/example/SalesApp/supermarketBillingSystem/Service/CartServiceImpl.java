@@ -1,10 +1,12 @@
 package com.example.SalesApp.supermarketBillingSystem.Service;
 
 import com.example.SalesApp.supermarketBillingSystem.Entity.Cart;
+import com.example.SalesApp.supermarketBillingSystem.Entity.CartId;
 import com.example.SalesApp.supermarketBillingSystem.Repository.CartRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,12 +31,26 @@ public class CartServiceImpl implements CartService{
     }
 
     @Override
-    public Cart findCartById(Long id) {
-        return cartRepo.getReferenceById(id);
+    public Cart findCartById(CartId cartId) {
+        return cartRepo.getReferenceById(cartId);
     }
 
     @Override
-    public List<Cart> getAllCart(Cart cart) {
+    public List<Cart> getAllCart() {
         return cartRepo.findAll();
     }
+
+    @Override
+    public List<Cart> getEntireUserCart(Long salesId){
+        List<Cart> productIdList = new ArrayList<>();
+        productIdList = cartRepo.getUserSpecificCart(salesId);
+        return productIdList;
+    }
+
+    @Override
+    public List<Long> getProductIds(Long salesId){
+        List<Long> productIdList = cartRepo.getUserSpecificProductList(salesId);
+        return productIdList;
+    }
+
 }

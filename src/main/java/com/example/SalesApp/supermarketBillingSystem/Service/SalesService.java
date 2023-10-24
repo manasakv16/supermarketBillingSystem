@@ -14,10 +14,5 @@ public interface SalesService {
     Sales getSalesById(Long salesId);
     List<Sales> getAllSales();
 
-    Sales generateBill(String customerId, String customerName, String customerMobile,
-                             String customerEmail, List<Product> productList);
-
-    void getProductList(final Long salesId, final List<Product> productList);
-
 
 }

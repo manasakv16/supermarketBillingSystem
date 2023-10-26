@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/admin")
 public class ProductController {
 
     @Autowired

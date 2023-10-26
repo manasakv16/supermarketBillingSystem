@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
+@RequestMapping("/user")
 public class SalesController {
 
     @Autowired

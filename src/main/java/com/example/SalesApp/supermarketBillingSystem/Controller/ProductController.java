@@ -33,7 +33,8 @@ public class ProductController {
         String msg;
         product.setTotalProductCost(product.getProductCost() * product.getProductUnit());
         Product product1 = new Product();
-        if(product.getProductName() != null && product.getProductCost() != null) {
+        if(product.getProductName() != null && !product.getProductName().isEmpty()
+                && product.getProductCost() != null && product.getProductCost() > 0) {
             product1 = productService.addProduct(product);
             msg = "*** Created Product - " + product1.getProductName() + "***";
         }

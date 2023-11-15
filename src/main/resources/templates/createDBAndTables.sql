@@ -36,3 +36,12 @@ foreign key(product_id) references product(product_id),
 primary key(sales_id, product_id)
 );
 
+create table user(
+id int primary key auto_increment,
+first_name varchar(30),
+last_name varchar(30),
+email varchar(50),
+password varchar(100)
+ukey varchar(100)
+);
+

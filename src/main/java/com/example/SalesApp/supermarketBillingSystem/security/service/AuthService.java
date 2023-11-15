@@ -1,16 +1,14 @@
 package com.example.SalesApp.supermarketBillingSystem.security.service;
 
-import com.example.SalesApp.supermarketBillingSystem.security.Entity.User;
-import com.example.SalesApp.supermarketBillingSystem.security.dto.JwtAuthenticationResponse;
-import com.example.SalesApp.supermarketBillingSystem.security.dto.RefreshTokenRequest;
-import com.example.SalesApp.supermarketBillingSystem.security.dto.SignInRequest;
-import com.example.SalesApp.supermarketBillingSystem.security.dto.SignUpRequest;
+import com.example.SalesApp.supermarketBillingSystem.security.dto.*;
 
 public interface AuthService {
 
-    public User SignUp(SignUpRequest signUpRequest);
+    public JsonResponse SignUp(SignUpRequest signUpRequest);
 
-    public JwtAuthenticationResponse signIn(SignInRequest signInRequest);
+    public JwtAuthenticationResponse signIn(SignInRequest signInRequest) throws Exception;
 
-    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
+    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) throws Exception;
+
+    public JsonResponse logout(SignInRequest signInRequest);
 }

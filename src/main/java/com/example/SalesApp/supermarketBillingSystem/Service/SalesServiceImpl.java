@@ -1,6 +1,5 @@
 package com.example.SalesApp.supermarketBillingSystem.Service;
 
-import com.example.SalesApp.supermarketBillingSystem.Entity.Product;
 import com.example.SalesApp.supermarketBillingSystem.Entity.Sales;
 import com.example.SalesApp.supermarketBillingSystem.Repository.CustomerRepo;
 import com.example.SalesApp.supermarketBillingSystem.Repository.ProductRepo;
@@ -39,13 +38,8 @@ public class SalesServiceImpl implements SalesService{
     }
 
     @Override
-    public Sales getSalesById(Sales sales) {
-        return salesRepo.getReferenceById(sales.getSalesId());
-    }
-
-    @Override
-    public Sales getSalesById(Long salesId) {
-        return salesRepo.getReferenceById(salesId);
+    public Optional<Sales> getSalesById(Long salesId) {
+        return salesRepo.findById(salesId);
     }
 
     @Override

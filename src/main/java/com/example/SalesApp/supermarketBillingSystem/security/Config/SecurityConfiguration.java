@@ -31,8 +31,9 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request.requestMatchers("/auth/****")
                         .permitAll()
-                        .requestMatchers("/admin/**").hasAnyAuthority(Role.ADMIN.name())
-                        .requestMatchers("/user/**").hasAnyAuthority(Role.USER.name())
+                        .requestMatchers("/sale/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                        .requestMatchers("/product/**").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers("/customer/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

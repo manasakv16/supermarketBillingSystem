@@ -1,0 +1,30 @@
+Auth Endpoints → ("/auth")
+POST-> ("/signup”) : sign up user
+POST-> ("/signin") : sign in user
+POST-> ("/refresh") : refresh user token
+POST-> ("/logout”) : Logout an user
+
+Customer Endpoints → ("/customer")
+Get -> ("/”) : show all customers
+Get -> ("/{id}") : Get customer with id = {id}
+PUT -> ("/{id}") : Update a customer with id = {id}
+
+Product Endpoints → ("/product")
+GET-> ("/”) : show all products
+POST -> ("/") : Add a product
+GET-> ("/{id}") : Get product with id = {id}
+PUT -> ("/{id}") : Update a product with id = {id}
+DELETE -> ("/{id}") : Delete a product with id = {id}
+
+Sale Endpoints → ("/Sale")
+GET-> ("/”) : show all Sale
+POST -> ("/") : Add a Sale
+GET-> ("/{id}") : Get Sale with id = {id}
+GET-> ("/{id}/{pid}") : Get user cart,
+Sale with id = {id} & product with id = {pid}
+PUT-> ("/{id}/{pid}") : Update user cart,
+Sale with id = {id} & product with id = {pid}
+DELETE-> ("/{id}/{pid}") : DELETE user cart,
+Sale with id = {id} & product with id = {pid}
+DELETE -> ("/{id}") : Delete a Sale with id = {id}
+Get -> (/Bill{id}) : Get bill for Sale with id = {id}

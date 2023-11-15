@@ -16,7 +16,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
-@RequestMapping("/user")
 public class SalesController {
 
     @Autowired
@@ -38,9 +37,9 @@ public class SalesController {
     // Else - ask to register customer
     @RequestMapping("/startSale")
     public String startSale(@ModelAttribute ("sales")Sales sales, final ModelMap modelMap) {
-        final Customer getCustomer = customerService.getCustomerById(sales.getCustomerId());
+        final Optional<Customer> getCustomer = customerService.getCustomerById(sales.getCustomerId());
         String msg = "";
-        if(customerService.isCustomerValid(getCustomer)) {
+        if(customerService.isCustomerValid(getCustomer.get())) {
             final Sales newSales = salesService.addSales(sales);
             modelMap.addAttribute("sales", newSales);
             return "updateCart";
@@ -88,13 +87,13 @@ public class SalesController {
     @RequestMapping("/payAndGenerateBill")
     public String payAndGenerateBill(@RequestParam("id") Long salesID, final ModelMap modelMap){
 
-        final Sales sale = salesService.getSalesById(salesID);
+        final Optional<Sales> sale = salesService.getSalesById(salesID);
         final List<Product> productList = getUserProductList(getUserCartList(salesID));
-        final Customer customer = customerService.getCustomerById(sale.getCustomerId());
+        final Optional<Customer> customer = customerService.getCustomerById(sale.get().getCustomerId());
         for(final Product product: productList){
             product.setTotalProductCost(product.getProductCost() * product.getProductUnit());
         }
-        modelMap.addAttribute("customer", customer);
+        modelMap.addAttribute("customer", customer.get());
         modelMap.addAttribute("sales", sale);
         modelMap.addAttribute("product", productList);
         modelMap.addAttribute("msg", "Thanks for shopping with us. <3 ");
@@ -112,7 +111,7 @@ public class SalesController {
 
     @RequestMapping("/editSales")
     public String editSale(@RequestParam("id") Long salesId, @RequestParam("pid") Long productId, final ModelMap modelMap){
-        final Cart cart = cartService.findCartById(new CartId(salesId, productId));
+        final Optional<Cart> cart = cartService.findCartById(new CartId(salesId, productId));
         final Optional<Product> product = productService.getProductById(productId);
         modelMap.addAttribute("product", product.get());
         modelMap.addAttribute("cart", cart);
@@ -123,15 +122,15 @@ public class SalesController {
     public String updateSalesProduct(@ModelAttribute("product") Product product, @ModelAttribute("cart") Cart cart,
                                      final ModelMap modelMap){
 
-        final Cart oldCart = cartService.findCartById(new CartId(cart.getSalesId(), cart.getProductId()));
+        final Optional<Cart> oldCart = cartService.findCartById(new CartId(cart.getSalesId(), cart.getProductId()));
         final Cart newCart = new Cart(cart.getSalesId(), cart.getProductId(), cart.getProductCount());
-        final double amount = (newCart.getProductCount() - oldCart.getProductCount()) * product.getProductCost();
+        final double amount = (newCart.getProductCount() - oldCart.get().getProductCount()) * product.getProductCost();
         final Cart updatedCart = cartService.editCart(newCart);
 
         // update total
-        final Sales sales = salesService.getSalesById(cart.getSalesId());
-        sales.setTotal(sales.getTotal() + amount);
-        Sales updatedSales = salesService.editSales(sales);
+        final Optional<Sales> sales = salesService.getSalesById(cart.getSalesId());
+        sales.get().setTotal(sales.get().getTotal() + amount);
+        Sales updatedSales = salesService.editSales(sales.get());
 
         // return cart back to user
         final List<Product> productList = getUserProductList(getUserCartList(newCart.getSalesId()));
@@ -145,15 +144,15 @@ public class SalesController {
 
     @RequestMapping("/deleteProductInSale")
     public String deleteProduct(@RequestParam("id") Long salesId, @RequestParam("pid") Long productId, final ModelMap modelMap) {
-        final Cart cart = cartService.findCartById(new CartId(salesId, productId));
-        cartService.deleteCart(cart);
+        final Optional<Cart> cart = cartService.findCartById(new CartId(salesId, productId));
+        cartService.deleteCart(cart.get());
 
         // update the total
-        final Optional<Product> product = productService.getProductById(cart.getProductId());
-        final double amount = cart.getProductCount() * product.get().getProductCost();
-        final Sales sales = salesService.getSalesById(salesId);
-        sales.setTotal(sales.getTotal() - amount);
-        Sales updatedSales = salesService.editSales(sales);
+        final Optional<Product> product = productService.getProductById(cart.get().getProductId());
+        final double amount = cart.get().getProductCount() * product.get().getProductCost();
+        final Optional<Sales> sales = salesService.getSalesById(salesId);
+        sales.get().setTotal(sales.get().getTotal() - amount);
+        Sales updatedSales = salesService.editSales(sales.get());
 
         // return cart back to user
         final List<Product> productList = getUserProductList(getUserCartList(salesId));
@@ -169,8 +168,8 @@ public class SalesController {
         for(final Cart cart: cartList){
             cartService.deleteCart(cart);
         }
-        final Sales salesById = salesService.getSalesById(salesId);
-        salesService.deleteSales(salesById);
+        final Optional<Sales> salesById = salesService.getSalesById(salesId);
+        salesService.deleteSales(salesById.get());
         modelMap.addAttribute("msg", "Deleted sale - " + salesId);
         return "addSale";
     }
@@ -194,14 +193,14 @@ public class SalesController {
 
     public Sales getUserNewTotal(final Product product, final Sales sales){
         final Optional<Product> getProduct = productService.getProductById(product.getProductId());
-        final Sales getSale = salesService.getSalesById(sales.getSalesId());
-        if(getSale.getTotal() != null) {
-            getSale.setTotal(getSale.getTotal() + (getProduct.get().getProductCost() * product.getProductUnit()));
+        final Optional<Sales> getSale = salesService.getSalesById(sales.getSalesId());
+        if(getSale.get().getTotal() != null) {
+            getSale.get().setTotal(getSale.get().getTotal() + (getProduct.get().getProductCost() * product.getProductUnit()));
         }
         else  {
-            getSale.setTotal((getProduct.get().getProductCost() * product.getProductUnit()));
+            getSale.get().setTotal((getProduct.get().getProductCost() * product.getProductUnit()));
         }
-        return getSale;
+        return getSale.get();
     }
 
 }

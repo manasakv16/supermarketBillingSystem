@@ -1,12 +1,11 @@
 package com.example.SalesApp.supermarketBillingSystem.RestController;
 
 import com.example.SalesApp.supermarketBillingSystem.Entity.*;
-import com.example.SalesApp.supermarketBillingSystem.Service.CartService;
-import com.example.SalesApp.supermarketBillingSystem.Service.CustomerService;
-import com.example.SalesApp.supermarketBillingSystem.Service.ProductService;
-import com.example.SalesApp.supermarketBillingSystem.Service.SalesService;
+import com.example.SalesApp.supermarketBillingSystem.Service.*;
 import com.example.SalesApp.supermarketBillingSystem.security.dto.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +25,8 @@ public class SalesControllerRest {
     private CustomerService customerService;
     @Autowired
     private CartService cartService;
+    @Autowired
+    private PdfGenerationService pdfGenerationService;
 
     @PostMapping("/")
     public ResponseEntity<JsonResponse> startSale(@RequestBody Sales sales) {
@@ -34,12 +35,12 @@ public class SalesControllerRest {
         sales.setTotal(0.0);
         final JsonResponse jsonResponse = new JsonResponse();
         final Sales newSales;
-        if(getCustomer.isPresent() && getCustomer.get().getCustomerMobile().length() == 10) {
+        if (getCustomer.isPresent() && getCustomer.get().getCustomerMobile().length() == 10) {
             msg = "sale created, start shopping.";
             newSales = salesService.addSales(sales);
         }
         else {
-            if(sales.getCustomerId().length() == 10) {
+            if (sales.getCustomerId().length() == 10) {
                 Customer customer = customerService.addCustomer(new Customer("", sales.getCustomerId(), ""));
                 msg = "Customer registered - " + sales.getCustomerId() + ", start shopping- ";
                 newSales = salesService.addSales(sales);
@@ -56,7 +57,7 @@ public class SalesControllerRest {
     }
 
     @GetMapping("/bill/{id}")
-    public ResponseEntity<JsonResponse> payAndGenerateBill(@PathVariable("id") Long salesID){
+    public ResponseEntity<JsonResponse> payAndGenerateBill(@PathVariable("id") Long salesID) {
         final Optional<Sales> sale = salesService.getSalesById(salesID);
         final JsonResponse jsonResponse = new JsonResponse();
         if (sale.isPresent()) {
@@ -74,7 +75,7 @@ public class SalesControllerRest {
     }
 
     @GetMapping("/")
-    public ResponseEntity<JsonResponse> getSalesReport(){
+    public ResponseEntity<JsonResponse> getSalesReport() {
         final List<Sales> allSales = salesService.getAllSales();
         JsonResponse jsonResponse = new JsonResponse();
         jsonResponse.setObject(allSales);
@@ -82,10 +83,10 @@ public class SalesControllerRest {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<JsonResponse> editSale(@PathVariable("id") Long salesId){
+    public ResponseEntity<JsonResponse> editSale(@PathVariable("id") Long salesId) {
         final JsonResponse jsonResponse = new JsonResponse();
         final Optional<Sales> sales = salesService.getSalesById(salesId);
-        if(sales.isPresent()) {
+        if (sales.isPresent()) {
             List<Cart> entireUserCart = cartService.getEntireUserCart(salesId);
             jsonResponse.setObject(entireUserCart);
         }
@@ -96,12 +97,12 @@ public class SalesControllerRest {
     }
 
     @GetMapping("{id}/{pid}")
-    public ResponseEntity<JsonResponse> editProductOfASale(@PathVariable("id") Long salesId, @PathVariable("pid") Long productId){
+    public ResponseEntity<JsonResponse> editProductOfASale(@PathVariable("id") Long salesId, @PathVariable("pid") Long productId) {
         final JsonResponse jsonResponse = new JsonResponse();
         final Optional<Sales> sales = salesService.getSalesById(salesId);
-        if(sales.isPresent()) {
+        if (sales.isPresent()) {
             Optional<Cart> cartById = cartService.findCartById(new CartId(salesId, productId));
-            if(cartById.isPresent()) {
+            if (cartById.isPresent()) {
                 Optional<Product> product = productService.getProductById(productId);
                 product.get().setProductUnit(cartById.get().getProductCount());
                 product.get().setTotalProductCost(product.get().getProductCost() * product.get().getProductUnit());
@@ -119,14 +120,14 @@ public class SalesControllerRest {
 
     @PutMapping("{id}/{pid}")
     public ResponseEntity<JsonResponse> updateSalesProduct(@PathVariable("id") Long salesId, @PathVariable("pid") Long productId,
-                                                           @RequestBody Product product){
+                                                           @RequestBody Product product) {
         final JsonResponse jsonResponse = new JsonResponse();
         final Optional<Sales> sales = salesService.getSalesById(salesId);
         final Optional<Product> product1 = productService.getProductById(productId);
-        if(sales.isPresent() && product1.isPresent()) {
+        if (sales.isPresent() && product1.isPresent()) {
             final Optional<Cart> oldCart = cartService.findCartById(new CartId(salesId, productId));
             final Cart newCart = new Cart(salesId, productId, product.getProductUnit());
-            if(oldCart.isPresent()) {
+            if (oldCart.isPresent()) {
                 final double amount = (newCart.getProductCount() - oldCart.get().getProductCount())
                         * product1.get().getProductCost();
                 final Cart updatedCart = cartService.editCart(newCart);
@@ -174,10 +175,10 @@ public class SalesControllerRest {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<JsonResponse> deleteSale(@PathVariable("id") Long salesId){
+    public ResponseEntity<JsonResponse> deleteSale(@PathVariable("id") Long salesId) {
 
         final List<Cart> cartList = getUserCartList(salesId);
-        for(final Cart cart: cartList){
+        for (final Cart cart : cartList) {
             cartService.deleteCart(cart);
         }
         final Optional<Sales> salesById = salesService.getSalesById(salesId);
@@ -193,7 +194,7 @@ public class SalesControllerRest {
     }
 
     // Update the product list based on their cart
-    public List<Product> getUserProductList(final List<Cart> userCartList){
+    public List<Product> getUserProductList(final List<Cart> userCartList) {
         final List<Product> productList = new ArrayList<>();
 
         for (final Cart cart : userCartList) {
@@ -205,6 +206,41 @@ public class SalesControllerRest {
 
         }
         return productList;
+    }
+
+    // Generate bill as pdf and enable download
+    @GetMapping("/generate/{id}")
+    public ResponseEntity<byte[]> generateAndDownloadBill(@PathVariable("id") Long salesID) {
+        final Optional<Sales> sale = salesService.getSalesById(salesID);
+        final List<Object> list = new ArrayList<>();
+        if (sale.isPresent()) {
+            list.add(sale.get());
+            list.addAll(getUserProductList(getUserCartList(salesID)));
+            return getBillAsPdfUsingIText(list, salesID);
+        }
+        throw new RuntimeException("Invalid sales ID");
+    }
+
+    public ResponseEntity<byte[]> getBillAsPdfUsingIText(final List<Object> list, final Long salesID){
+        final byte[] pdfBytes = pdfGenerationService.generateBillPdf(list);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "bill_" + salesID + ".pdf");
+        return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
+    }
+
+    public ResponseEntity<byte[]> getBillAsPdfUsingPdfBox(final List<Object> list){
+        final String billContent = list.toString();
+        final byte[] pdfBytes = pdfGenerationService.generateBillPdf(billContent);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "bill.pdf");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(pdfBytes.length)
+                .body(pdfBytes);
     }
 
 }

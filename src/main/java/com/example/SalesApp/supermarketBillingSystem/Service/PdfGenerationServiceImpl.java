@@ -64,14 +64,22 @@ public class PdfGenerationServiceImpl implements PdfGenerationService{
     public byte[] generateBillPdf(final List<Object> objectList) {
 
         final Document document = new Document();
+        final Sales sales = (Sales) objectList.get(0);
+        final String adminPassword = "ADMIN";
+        final String userPassword = sales.getCustomerId();
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
             final PdfWriter writer = PdfWriter.getInstance(document, byteArrayOutputStream);
+
+            // Encrypt the PDF
+            writer.setEncryption(userPassword.getBytes(), adminPassword.getBytes(),
+                    PdfWriter.ALLOW_PRINTING, PdfWriter.ENCRYPTION_AES_128);
+
             writer.setPageEvent(new PdfPageEventHelper() {
                 @Override
-                public void onEndPage(PdfWriter writer, Document document) {
-                    PdfContentByte canvas = writer.getDirectContentUnder();
-                    Rectangle rect = document.getPageSize();
+                public void onEndPage(final PdfWriter writer, final Document document) {
+                    final PdfContentByte canvas = writer.getDirectContentUnder();
+                    final Rectangle rect = document.getPageSize();
                     rect.setBackgroundColor(new BaseColor(117, 156, 217));
                     canvas.rectangle(rect);
                 }
@@ -88,7 +96,7 @@ public class PdfGenerationServiceImpl implements PdfGenerationService{
             image.setAlignment(Element.ALIGN_RIGHT);
             document.add(image);
 
-            final Sales sales = (Sales) objectList.get(0);
+
             addUserData(document, "Sales Date: " + sales.getSalesDate());
             addUserData(document, "Sales ID: " + sales.getSalesId());
             addUserData(document, "Customer ID: " + sales.getCustomerId());
@@ -97,7 +105,7 @@ public class PdfGenerationServiceImpl implements PdfGenerationService{
             addUserData(document, "");
             addUserData(document, "");
 
-            final PdfPTable table = new PdfPTable(objectList.size());
+            final PdfPTable table = new PdfPTable(4);
             table.setWidthPercentage(80);
             table.setSpacingBefore(10f);
             table.setSpacingAfter(10f);

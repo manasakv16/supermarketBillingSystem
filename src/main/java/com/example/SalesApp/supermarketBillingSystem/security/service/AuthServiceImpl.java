@@ -5,6 +5,8 @@ import com.example.SalesApp.supermarketBillingSystem.security.Entity.User;
 import com.example.SalesApp.supermarketBillingSystem.security.Repository.UserRepository;
 import com.example.SalesApp.supermarketBillingSystem.security.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +27,7 @@ public class AuthServiceImpl implements AuthService{
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private static final Logger logger = Logger.getLogger(AuthServiceImpl.class.getName());
 
     public JsonResponse SignUp(final SignUpRequest signUpRequest) {
         final User user = new User();
@@ -37,11 +41,13 @@ public class AuthServiceImpl implements AuthService{
             user.setRole(Role.USER);
             User user1 = userRepository.save(user);
             jsonResponse.setResponseCode("200");
-            jsonResponse.setMessage("User created: " + user1.getFirstName());
+            jsonResponse.setMessage("User signed up: " + user1.getFirstName());
+            logger.info("User signed up: " + user1.getFirstName());
         }
         else {
             jsonResponse.setResponseCode("403");
             jsonResponse.setMessage("User failed to create, password not strong enough. It should be min of length 8 having a lower case char, upper case char, a number & a special char");
+            logger.info("user not created, password is not strong");
         }
         return jsonResponse;
     }
@@ -56,12 +62,17 @@ public class AuthServiceImpl implements AuthService{
         }
     }
 
-    public JwtAuthenticationResponse signIn(SignInRequest signInRequest) throws Exception {
+    public ResponseEntity<HttpHeaders> signIn(SignInRequest signInRequest) throws Exception {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken
                 (signInRequest.getEmail(), signInRequest.getPassword()));
         final var user = userRepository.findByEmail(signInRequest.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password"));
+                .orElseThrow(() -> {
+                    new UsernameNotFoundException("Invalid username or password");
+                    logger.info("User sign In failed, Invalid username or password - " + signInRequest);
+                    return null;
+                });
 
+        logger.info("user signed in - " + user.getEmail());
         final HashMap<String, Object> role = new HashMap<>();
         role.put("role", user.getRole().name());
         role.put("key", Math.random());
@@ -69,39 +80,43 @@ public class AuthServiceImpl implements AuthService{
         var token = jwtService.generateToken(role, user);
         var refreshToken = jwtService.generateRefreshToken(role, user);
 
-        final JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
-        jwtAuthenticationResponse.setToken(token);
-        jwtAuthenticationResponse.setRefreshToken(refreshToken);
-
         storeUserKeyInDB(role, user);
-        return jwtAuthenticationResponse;
 
+        final HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        headers.set("refreshAuthorization", refreshToken);
+        return ResponseEntity.ok(headers);
     }
 
-    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) throws Exception {
+    public ResponseEntity<HttpHeaders> refreshToken(RefreshTokenRequest refreshTokenRequest) throws Exception {
         String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("Invalid user or password"));
+                .orElseThrow(() -> {
+                    new UsernameNotFoundException("Invalid user or password");
+                    logger.info("Invalid user or password found in refresh token. Token not refreshed");
+                    return null;
+                });
 
         if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)) {
             final HashMap<String, Object> role = new HashMap<>();
             role.put("role", user.getRole());
             role.put("key", Math.random());
             var token = jwtService.generateToken(role, user);
+            storeUserKeyInDB(role, user);
+            logger.info("token refreshed");
 
-            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
-            jwtAuthenticationResponse.setToken(token);
-            jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
-            System.out.println("token: " + token);
-            System.out.println("refreshToken: " + refreshTokenRequest.getToken());
-            return jwtAuthenticationResponse;
+            final HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", token);
+            return ResponseEntity.ok(headers);
         }
+        logger.info("Invalid token. Token not refreshed");
         return  null;
     }
 
     public void storeUserKeyInDB(HashMap<String, Object> role, User user){
         user.setKey(role.get("key").toString());
         User save = userRepository.save(user);
+        logger.info("updated user key in DB - " + user.getEmail());
     }
 
     public JsonResponse logout(SignInRequest signInRequest){
@@ -111,9 +126,11 @@ public class AuthServiceImpl implements AuthService{
             user.get().setKey(null);
             User save = userRepository.save(user.get());
             jsonResponse.setMessage("Logged out user - " + signInRequest.getEmail());
+            logger.info("Logged out user - " + signInRequest.getEmail());
         }
         else {
             jsonResponse.setMessage("No user found with mail - " + signInRequest.getEmail());
+            logger.info("Invalid user passed in request. Logout not applicable");
         }
         return  jsonResponse;
     }

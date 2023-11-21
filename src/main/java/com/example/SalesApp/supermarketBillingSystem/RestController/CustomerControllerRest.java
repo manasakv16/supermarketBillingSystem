@@ -3,10 +3,8 @@ package com.example.SalesApp.supermarketBillingSystem.RestController;
 import com.example.SalesApp.supermarketBillingSystem.Entity.Customer;
 import com.example.SalesApp.supermarketBillingSystem.Service.CustomerService;
 import com.example.SalesApp.supermarketBillingSystem.security.dto.JsonResponse;
-import org.hibernate.boot.jaxb.internal.JaxpSourceXmlSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

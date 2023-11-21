@@ -1,14 +1,16 @@
 package com.example.SalesApp.supermarketBillingSystem.security.service;
 
 import com.example.SalesApp.supermarketBillingSystem.security.dto.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
 
-    public JsonResponse SignUp(SignUpRequest signUpRequest);
+    JsonResponse SignUp(SignUpRequest signUpRequest);
 
-    public JwtAuthenticationResponse signIn(SignInRequest signInRequest) throws Exception;
+    ResponseEntity<HttpHeaders> signIn(SignInRequest signInRequest) throws Exception;
 
-    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) throws Exception;
+    ResponseEntity<HttpHeaders> refreshToken(RefreshTokenRequest refreshTokenRequest) throws Exception;
 
-    public JsonResponse logout(SignInRequest signInRequest);
+    JsonResponse logout(SignInRequest signInRequest);
 }

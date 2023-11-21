@@ -18,18 +18,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Logger logger = Logger.getLogger(JwtAuthenticationFilter.class.getName());
 
     private final JwtService jwtService;
 
     private final UserService userService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
+                                    final FilterChain filterChain)
             throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
@@ -37,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String userEmail;
         if (StringUtils.isEmpty(authHeader) || !org.apache.commons.lang3.StringUtils.startsWith(authHeader, "Bearer ")) {
             filterChain.doFilter(request, response);
+            logger.info("No token passed in the request : " + request);
             return;
         }
         jwt = authHeader.substring(7);
@@ -49,6 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if ( jwt.isEmpty() || !jwtService.isTokenValid(jwt, userDetails)) {
                 response.setStatus(401);
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
+                logger.info("Access not allowed - Token is invalid " + request);
             }
             else {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
@@ -59,6 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 context.setAuthentication(authToken);
                 SecurityContextHolder.setContext(context);
                 filterChain.doFilter(request, response);
+                logger.info("Access allowed - Token is valid " + request);
             }
         }
     }

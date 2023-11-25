@@ -3,6 +3,8 @@ POST-> ("/signup”) : sign up user
 POST-> ("/signin") : sign in user
 POST-> ("/refresh") : refresh user token
 POST-> ("/logout”) : Logout an user
+POST-> ("/forgot/{id}") : sends a temporary password to user with id = {id}
+POST-> ("/reset/{id}") : allows to reset password for user with id = {id}
 
 Customer Endpoints → ("/customer")
 Get -> ("/”) : show all customers
@@ -16,7 +18,7 @@ GET-> ("/{id}") : Get product with id = {id}
 PUT -> ("/{id}") : Update a product with id = {id}
 DELETE -> ("/{id}") : Delete a product with id = {id}
 
-Sale Endpoints → ("/Sale")
+Sale Endpoints → ("/sale")
 GET-> ("/”) : show all Sale
 POST -> ("/") : Add a Sale
 GET-> ("/{id}") : Get Sale with id = {id}
@@ -26,3 +28,13 @@ DELETE-> ("/{id}/{pid}") : DELETE user cart, Sale with id = {id} & product with 
 DELETE -> ("/{id}") : Delete a Sale with id = {id}
 GET -> ("/Bill{id}") : Get bill for Sale with id = {id}
 GET -> ("generate/{id}") : Generate Bill for id = {id} as PDF and allow download option
+
+User Endpoints → ("/user")
+GET-> ("/”) : show all users
+POST -> ("/") : Add a user
+GET-> ("/{id}") : Get user with id = {id}
+PUT -> ("/{id}") : Update a user with id = {id}
+DELETE -> ("/{id}") : Delete a user with id = {id}
+
+Mail Endpoints -> ("mail")
+POST -> ("/") : Send mail with predefined data

@@ -13,4 +13,10 @@ public interface AuthService {
     ResponseEntity<HttpHeaders> refreshToken(RefreshTokenRequest refreshTokenRequest) throws Exception;
 
     JsonResponse logout(SignInRequest signInRequest);
+
+    boolean passwordVerifier(String password);
+
+    String generateRandomPassword();
+
+    JsonResponse resetPassword(final String newPassword, final String newPasswordAgain, final String email);
 }

@@ -36,7 +36,7 @@ public class EmailServiceImpl implements EmailService{
     public void sendMailHTML(final String to, final String subject, final String body) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
 
-        message.setFrom(new InternetAddress("anyaforger161616@gmail.com")); // add from address
+        message.setFrom(new InternetAddress("")); // add from address
         message.setRecipients(Message.RecipientType.TO, to); // add to address
         message.setSubject(subject);
 
@@ -68,7 +68,7 @@ public class EmailServiceImpl implements EmailService{
 
         final MimeMessage message = javaMailSender.createMimeMessage();
 
-        message.setFrom(new InternetAddress("anyaforger161616@gmail.com"));
+        message.setFrom(new InternetAddress("")); // add from address
         final MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(to);
         helper.setSubject(subject);
@@ -85,7 +85,7 @@ public class EmailServiceImpl implements EmailService{
         final MimeMessage message = javaMailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(to);
-        helper.setCc("anyaforger161616@gmail.com");
+        helper.setCc(""); // cc address
         helper.setSubject(subject);
         message.setContent(body, "text/html; charset=utf-8");
         helper.setText("", body);

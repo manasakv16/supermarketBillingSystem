@@ -3,6 +3,8 @@ package com.example.SalesApp.supermarketBillingSystem.RestController;
 import com.example.SalesApp.supermarketBillingSystem.Entity.*;
 import com.example.SalesApp.supermarketBillingSystem.Service.*;
 import com.example.SalesApp.supermarketBillingSystem.security.dto.JsonResponse;
+import com.example.SalesApp.supermarketBillingSystem.security.service.EmailService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 @Controller
 @RequestMapping("/sale")
 public class SalesControllerRest {
@@ -27,6 +30,8 @@ public class SalesControllerRest {
     private CartService cartService;
     @Autowired
     private PdfGenerationService pdfGenerationService;
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping("/")
     public ResponseEntity<JsonResponse> startSale(@RequestBody Sales sales) {
@@ -210,7 +215,7 @@ public class SalesControllerRest {
 
     // Generate bill as pdf and enable download
     @GetMapping("/generate/{id}")
-    public ResponseEntity<byte[]> generateAndDownloadBill(@PathVariable("id") Long salesID) {
+    public ResponseEntity<byte[]> generateAndDownloadBill(@PathVariable("id") Long salesID) throws MessagingException {
         final Optional<Sales> sale = salesService.getSalesById(salesID);
         final List<Object> list = new ArrayList<>();
         if (sale.isPresent()) {
@@ -221,12 +226,15 @@ public class SalesControllerRest {
         throw new RuntimeException("Invalid sales ID");
     }
 
-    public ResponseEntity<byte[]> getBillAsPdfUsingIText(final List<Object> list, final Long salesID){
+    public ResponseEntity<byte[]> getBillAsPdfUsingIText(final List<Object> list, final Long salesID) throws MessagingException {
         final byte[] pdfBytes = pdfGenerationService.generateBillPdf(list);
-
+        final String fileName = "bill_" + salesID + ".pdf";
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "bill_" + salesID + ".pdf");
+        headers.setContentDispositionFormData("attachment", fileName);
+
+        emailService.sendMailWithAttachment("", "",
+                "PFA bill for your today's shopping", pdfBytes, fileName); // update data here
         return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
     }
 
